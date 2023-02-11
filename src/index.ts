@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
-import { db } from './database/knex'
+import { UserController } from './controller/UserController'
+import { PostController } from './controller/PostController'
 
 const app = express()
 
@@ -11,21 +12,13 @@ app.listen(3003, () => {
     console.log(`Servidor rodando na porta ${3003}`)
 })
 
-app.get("/ping", async (req: Request, res: Response) => {
-    try {
-        const result = await db("users")
-        res.status(200).send({ message: "Pong!", result })
-    } catch (error) {
-        console.log(error)
+const userController = new UserController()
+const postController  = new PostController()
 
-        if (req.statusCode === 200) {
-            res.status(500)
-        }
+app.post("/users", userController.signup)
+app.get("/users/login", userController.login)
 
-        if (error instanceof Error) {
-            res.send(error.message)
-        } else {
-            res.send("Erro inesperado")
-        }
-    }
-})
+app.post("/posts", postController.createPost)
+app.get("/posts", postController.getPosts)
+app.put("/posts/:id", postController.editPost)
+app.delete("/posts/:id", postController.deletePost)
