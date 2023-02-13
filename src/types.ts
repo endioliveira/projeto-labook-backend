@@ -26,3 +26,9 @@ export interface likeDislikeDB {
 export interface UpdatePostDB {
     content: string
 }
+
+export interface LikeDislikeDB {
+    user_id: string,
+    post_id: string,
+    like: number
+}
