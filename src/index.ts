@@ -22,3 +22,5 @@ app.post("/posts", postController.createPost)
 app.get("/posts", postController.getPosts)
 app.put("/posts/:id", postController.editPost)
 app.delete("/posts/:id", postController.deletePost)
+
+app.put("/post/:id/like", postController.likeDislikePost)
