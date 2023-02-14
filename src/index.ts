@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
-import { UserController } from './controller/UserController'
-import { PostController } from './controller/PostController'
+import { userRouter } from './router/userRouter'
+import { postRouter } from './router/postRouter'
 
 const app = express()
 
@@ -12,15 +12,6 @@ app.listen(3003, () => {
     console.log(`Servidor rodando na porta ${3003}`)
 })
 
-const userController = new UserController()
-const postController  = new PostController()
+app.use("/users", userRouter) // middleware de rota de users
 
-app.post("/users", userController.signup)
-app.get("/users/login", userController.login)
-
-app.post("/posts", postController.createPost)
-app.get("/posts", postController.getPosts)
-app.put("/posts/:id", postController.editPost)
-app.delete("/posts/:id", postController.deletePost)
-
-app.put("/post/:id/like", postController.likeDislikePost)
+app.use("/posts", postRouter)

@@ -4,39 +4,27 @@ import { LikeDislikeDatabase } from "../database/LikeDislikeDatabase"
 import { Post } from "../models/Post"
 import { LikeDislike } from "../models/LikeDislike"
 import { PostDB, UpdatePostDB, LikeDislikeDB } from "../types"
+import { PostBusiness } from "../business/PostBusiness"
+import { BaseError } from "../errors/BaseError"
 
 export class PostController {
+  constructor(
+    private postBusiness: PostBusiness
+  ) {}
   getPosts = async (req: Request, res: Response) => {
     try {
       const q = req.query.q as string | undefined
 
-      const postsDB: PostDB[] = await new PostDatabase().findPost(q)
-
-      const posts: Post[] = postsDB.map(
-        (postDB) =>
-          new Post(
-            postDB.id,
-            postDB.creator_id,
-            postDB.content,
-            postDB.likes,
-            postDB.dislikes,
-            postDB.created_at,
-            postDB.updated_at
-          )
-      )
-
-      res.status(200).send(posts)
+      const output = await this.postBusiness.getPosts(q)
+      
+      res.status(200).send(output)
     } catch (error) {
       console.log(error)
 
-      if (req.statusCode === 200) {
-        res.status(500)
-      }
-
-      if (error instanceof Error) {
-        res.send(error.message)
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message) 
       } else {
-        res.send("Erro inesperado")
+        res.status(500).send("Erro inesperado")
       }
     }
   }
@@ -44,186 +32,78 @@ export class PostController {
 
   createPost = async (req: Request, res: Response) => {
     try {
-      const { id, creator_id, content, likes, dislikes, } = req.body as PostDB
-      const postDBInstance = new PostDatabase()
 
-      if (id !== undefined) {
-        if (typeof id !== "string") {
-          res.status(400)
-          throw new Error("O 'id' deve ser string")
-        }
+      // const { id, creator_id, content, likes, dislikes, } = req.body as PostDB
+     
+      const input = {
+        id: req.body.id,
+        creator_id: req.body.creator_id,
+        content: req.body.content,
+        likes: req.body.likes,
+        dislikes: req.body.dislikes
       }
 
-      if (creator_id !== undefined) {
-        if (typeof creator_id !== "string") {
-          res.status(400)
-          throw new Error("O 'creator_id' deve ser string")
-        }
-      }
 
-      if (content !== undefined) {
-        if (typeof content !== "string") {
-          res.status(400)
-          throw new Error("O 'content' deve ser string")
-        }
-      }
+      const output = await this.postBusiness.createPost(input)
 
-      if (likes !== undefined) {
-        if (typeof likes !== "number") {
-          res.status(400)
-          throw new Error("O 'likes' deve ser number")
-        }
-      }
-
-      if (dislikes !== undefined) {
-        if (typeof dislikes !== "number") {
-          res.status(400)
-          throw new Error("O 'dislikes' deve ser number")
-        }
-      }
-
-      const newPost = new Post(
-        id,
-        creator_id,
-        content,
-        likes,
-        dislikes,
-        new Date().toISOString(),
-        new Date().toISOString()
-      )
-
-      const newPostDB: PostDB = {
-        id: newPost.getId(),
-        creator_id: newPost.getCreatorId(),
-        content: newPost.getContent(),
-        likes: newPost.getLikes(),
-        dislikes: newPost.getDislikes(),
-        created_at: newPost.getCreatedAt(),
-        updated_at: newPost.getUpdatedAt(),
-      }
-
-      await postDBInstance.insertPost(newPost)
-
-      res.status(201).send({ "content": content })
+      res.status(201).send({ "content": output })
 
     } catch (error) {
       console.log(error)
 
-      if (req.statusCode === 200) {
-        res.status(500)
-      }
-
-      if (error instanceof Error) {
-        res.send(error.message)
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message) 
       } else {
-        res.send("Erro inesperado")
+        res.status(500).send("Erro inesperado")
       }
     }
   }
 
   editPost = async (req: Request, res: Response) => {
     try {
-      const id = req.params.id
-      const { content } = req.body as UpdatePostDB
-      const postInstance = new PostDatabase()
+      // const id = req.params.id
+      // const { content } = req.body as UpdatePostDB
 
-      if (id !== undefined) {
-        if (typeof id !== "string") {
-          res.status(400)
-          throw new Error("'id' deve ser string")
-        }
+      const input = {
+        id: req.params.id,
+        content: req.body.content
       }
+      
 
-      const postExist: PostDB | undefined = await postInstance.findPostById(id)
+      const output = await this.postBusiness.editPost(input)
 
-      if (!postExist) {
-        res.status(404)
-        throw new Error("'id' não encontrado")
-      }
-
-      if (content !== undefined) {
-        if (typeof content !== "string") {
-          res.status(400)
-          throw new Error("'content' deve ser string")
-        }
-      }
-
-      const updatePost = new Post(
-        postExist.id,
-        postExist.creator_id,
-        postExist.content,
-        postExist.likes,
-        postExist.dislikes,
-        new Date().toISOString(),
-        new Date().toISOString()
-      )
-
-
-      content && updatePost.setContent(content)
-
-      await postInstance.updatePost({ id, content } as PostDB)
-
-      res.status(201).send({ "content": content })
+      res.status(201).send( output)
 
     } catch (error) {
       console.log(error)
 
-      if (req.statusCode === 200) {
-        res.status(500)
-      }
-
-      if (error instanceof Error) {
-        res.send(error.message)
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message) 
       } else {
-        res.send("Erro inesperado")
+        res.status(500).send("Erro inesperado")
       }
     }
   }
 
   deletePost = async (req: Request, res: Response) => {
     try {
-      const { id } = req.params
-      const postInstance = new PostDatabase()
-
-      if (id !== undefined) {
-        if (typeof id !== "string") {
-          res.status(400)
-          throw new Error("'id' deve ser string")
-        }
+      // const { id } = req.params
+      const input = {
+        id: req.params.id
       }
 
-      const postExist = await postInstance.findPostById(id)
 
-      if (!postExist) {
-        res.status(404)
-        throw new Error("'id' não encontrado")
-      }
-
-      const deletePost = new Post(
-        postExist.id,
-        postExist.creator_id,
-        postExist.content,
-        postExist.likes,
-        postExist.dislikes,
-        new Date().toISOString(),
-        new Date().toISOString()
-      )
-
-      await postInstance.deletePost(deletePost)
-
-      res.status(200).send("Post deletado com sucesso!")
+      const output = await this.postBusiness.deletePost(input)
+      
+      res.status(200).send({ output: "Post deletado com sucesso!" })
 
     } catch (error) {
       console.log(error)
 
-      if (req.statusCode === 200) {
-        res.status(500)
-      }
-
-      if (error instanceof Error) {
-        res.send(error.message)
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message) 
       } else {
-        res.send("Erro inesperado")
+        res.status(500).send("Erro inesperado")
       }
     }
   }
@@ -278,14 +158,10 @@ export class PostController {
     } catch (error) {
       console.log(error)
 
-      if (req.statusCode === 200) {
-        res.status(500)
-      }
-
-      if (error instanceof Error) {
-        res.send(error.message)
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message) 
       } else {
-        res.send("Erro inesperado")
+        res.status(500).send("Erro inesperado")
       }
     }
   }
