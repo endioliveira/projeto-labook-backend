@@ -5,13 +5,15 @@ import { LoginInputDTO, LoginOutputDTO, SignupInputDTO, SignupOutputDTO } from "
 import { NotFoundError } from "../errors/NotFoundError"
 import { IdGenerator } from "../services/IdGenerator"
 import { TokenManager, TokenPayload } from "../services/TokenManager"
-import { ROLES } from "../types"
+import { ROLES, UserDB } from "../types"
+import { HashManager } from "../services/HashManager"
 
 export class UserBusiness {
     constructor(
         private userDBInstance: UserDatabase,
         private idGenerator: IdGenerator,
-        private tokenManager: TokenManager
+        private tokenManager: TokenManager,
+        private hashManager: HashManager
     ) {}
 
     public signup = async (input: SignupInputDTO): Promise<SignupOutputDTO> => {
@@ -21,10 +23,10 @@ export class UserBusiness {
         const id = this.idGenerator.generate()
         const role = ROLES.NORMAL
         const createdAt = new Date().toISOString()
-
+        
         if (name === undefined) throw new BadRequestError("'name' é obrigatório")
         if (typeof name !== "string") throw new BadRequestError("'name' deve ser string")
-
+        
         if (email === undefined) throw new BadRequestError("'email' é obrigatório")
         if (typeof email !== "string") throw new BadRequestError("'email' deve ser string")
 
@@ -43,11 +45,13 @@ export class UserBusiness {
             throw new BadRequestError("'password' deve possuir pelo menos 4 caracteres!")
         }
 
+        const hashedPassword = await this.hashManager.hash(password)
+
         const newUser = new User(
             id,
             name,
             email,
-            password,
+            hashedPassword,
             role,
             createdAt
         )
@@ -72,43 +76,62 @@ export class UserBusiness {
         return output
     }
 
-//     public login = async (input: LoginInputDTO): Promise<LoginOutputDTO> => {
-//         const { email, password } = input
+    public login = async (input: LoginInputDTO): Promise<LoginOutputDTO> => {
+        const { email, password } = input
 
-//         if(!email.includes("@")) {
-//             throw new BadRequestError("'email' inválido!")
-//         }
+        if (email === undefined) throw new BadRequestError("'email' é obrigatório")
 
-//         if(password.length < 4) {
-//             throw new BadRequestError("'password' deve possuir pelo menos 4 caracteres!")
-//         }
+        if (typeof email !== "string") throw new BadRequestError("'email' deve ser string")
 
-//         // const usersDB: UserDB[] = await new UserDatabase().findUser(input)
-//         // console.log(email)
-//         const userDB = await this.userDBInstance.findUserByEmail(email)
+        if (password === undefined) throw new BadRequestError("'password' é obrigatório")
 
-//         if (!userDB) {
-//             throw new NotFoundError("'email' não encontrado")
-//         }
+        if (typeof password !== "string") throw new BadRequestError("'password' deve ser string")
 
-//         if (password !== userDB.password) {
-//             throw new BadRequestError("'email' ou 'password' incorretos")
-//         }
+        if(!email.includes("@")) {
+            throw new BadRequestError("'email' inválido!")
+        }
+
+        if(password.length < 4) {
+            throw new BadRequestError("'password' deve possuir pelo menos 4 caracteres!")
+        }
+
+        const userDB: UserDB | undefined = await this.userDBInstance.findUserByEmail(email)
+
+        if (!userDB) { 
+            throw new NotFoundError("O 'email' ou 'password' não foi encontrado")
+        }
+
+        const user = new User(
+            userDB.id,
+            userDB.name,
+            userDB.email,
+            userDB.password,
+            userDB.role,
+            userDB.created_at,
+        )
+
+        const hashedPassword = user.getPassword()
+
+        const isPasswordCorrect = await this.hashManager.compare(password, hashedPassword)
+
+        if(!isPasswordCorrect) {
+            throw new BadRequestError("O 'password' está incorreto!")
+        }
         
-//         // modelagem do payload do token
-//         const tokenPayload: TokenPayload = {
-//             id: userDB.id,
-//             name: userDB.name,
-//             role: userDB.role
-//         }
+        // modelagem do payload do token
+        const tokenPayload: TokenPayload = {
+            id: user.getId(),
+            name: user.getName(),
+            role: user.getRole()
+        }
 
-//         // criação do token
-//         const token = this.tokenManager.createToken(tokenPayload)
+        // criação do token
+        const token = this.tokenManager.createToken(tokenPayload)
 
-//         const output: LoginOutputDTO = {
-//             token
-//         }
+        const output: LoginOutputDTO = {
+            token
+        }
 
-//         return output
-//     }
+        return output
+    }
  }

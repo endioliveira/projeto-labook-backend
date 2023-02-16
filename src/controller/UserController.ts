@@ -39,28 +39,26 @@ export class UserController {
     }
   }
 
-  // public login = async (req: Request, res: Response) => {
-  //   try {
-  //     // const name = req.query.name as string | undefined
+  public login = async (req: Request, res: Response) => {
+    try {
+      const input: LoginInputDTO = {
+        email: req.body.email,
+        password: req.body.password
+      }
 
-  //     const input: LoginInputDTO = {
-  //       email: req.body.email,
-  //       password: req.body.password
-  //     }
+      //tratamento e regras
+      const output = await this.userBusiness.login(input)
 
-  //     //tratamento e regras
-  //     const output = await this.userBusiness.login(input)
+      res.status(200).send(output)
+    } catch (error) {
+      console.log(error)
 
-  //     res.status(200).send(output)
-  //   } catch (error) {
-  //     console.log(error)
-
-  //     if (error instanceof BaseError) {
-  //       res.status(error.statusCode).send(error.message)
-  //     } else {
-  //       res.status(500).send("Erro inesperado")
-  //     }
-  //   }
-  // }
+      if (error instanceof BaseError) {
+        res.status(error.statusCode).send(error.message)
+      } else {
+        res.status(500).send("Erro inesperado")
+      }
+    }
+  }
 }
 
