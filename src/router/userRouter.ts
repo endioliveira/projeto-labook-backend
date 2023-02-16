@@ -2,6 +2,7 @@ import express from "express";
 import { UserBusiness } from "../business/UserBusiness";
 import { UserController } from "../controller/UserController";
 import { UserDatabase } from "../database/UserDatabase";
+import { HashManager } from "../services/HashManager";
 import { IdGenerator } from "../services/IdGenerator"
 import { TokenManager } from "../services/TokenManager"
 
@@ -11,9 +12,10 @@ const userController = new UserController(
     new UserBusiness(
         new UserDatabase(),
         new IdGenerator(),
-        new TokenManager()
+        new TokenManager(),
+        new HashManager()
     )
 )
 
 userRouter.post("/signup", userController.signup)
-// userRouter.post("/login", userController.login)
+userRouter.post("/login", userController.login)
