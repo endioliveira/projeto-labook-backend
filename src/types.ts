@@ -3,13 +3,19 @@ export enum ROLES {
     ADMIN = "ADMIN"
 }
 
+// export interface TokenPayload {
+//     id: string,
+// 	name: string,
+//     role: ROLES
+// }
+
 export interface UserDB {
     id: string,
     name: string,
     email: string,
     password: string,
     role: ROLES,
-    created_at: string
+    created_at: string 
 }
 
 export interface UserModel {
@@ -18,7 +24,7 @@ export interface UserModel {
     email: string,
     password: string,
     role: ROLES,
-    createdAt: string
+    createdAt: string //trocar pra createdAt
 }
 
 export interface PostDB {
@@ -27,18 +33,22 @@ export interface PostDB {
     content: string, 
     likes: number,
     dislikes: number,
-    created_at: string,
-    updated_at: string
+    created_at: string, 
+    updated_at: string 
 }
 
 export interface PostModel {
     id: string,
-    creator_id: string,
+    // creator_id: string,
     content: string,
     likes: number,
     dislikes: number,
-    created_at: string,
-    updated_at: string
+    createdAt: string, //trocar pra createdAt
+    updatedAt: string, //trocar pra updatedAt
+    creator: {
+        id: string
+        name: string
+    }
 }
 
 export interface likeDislikeDB {

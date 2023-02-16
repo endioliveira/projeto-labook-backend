@@ -3,180 +3,202 @@ import { Post } from "../models/Post"
 import { PostModel } from "../types"
 
 export interface GetPostsInputDTO {
-    q: unknown
+    token: string | undefined
 }
 
 export type GetPostsOutputDTO = PostModel[]
 
-export interface createPostInputDTO {
-    id: string,
-    creator_id: string,
-    content: string,
-    likes: number,
-    dislikes: number
+export interface CreatePostInputDTO {
+    token: string | undefined,
+    content: unknown
 }
 
-export interface createPostOutputDTO {
-    message: string,
-    post: {
-        content: string
-    }
+export interface EditPostInputDTO {
+    idEdit: string,
+    token: string | undefined,
+    content: unknown
 }
 
-export interface editPostInputDTO {
-    id: string,
-    content: string,
+export interface DeletePostInputDTO {
+    idDelete: string,
+    token: string | undefined
 }
 
-export interface editPostOutputDTO {
-    message: string,
-    post: {
-        content: string
-    }
-}
-export interface deletePostInputDTO {
-    id: string,
-}
+// export interface GetPostsInputDTO {
+//     q: unknown
+// }
 
-export interface deletePostOutputDTO {
-    message: string,
-}
+// export type GetPostsOutputDTO = PostModel[]
 
-export interface likeDislikePostInputDTO {
-    user_id: string,
-    post_id: string,
-    like: number
-}
+// export interface createPostInputDTO {
+//     id: string,
+//     creator_id: string,
+//     content: string,
+//     likes: number,
+//     dislikes: number
+// }
 
-export interface likeDislikePostOutputDTO {
-    message: string,
-}
+// export interface createPostOutputDTO {
+//     message: string,
+//     post: {
+//         content: string
+//     }
+// }
 
-export class PostDTO {
-    public createPostInput(
-        id: unknown,
-        creator_id: unknown,
-        content: unknown,
-        likes: unknown,
-        dislikes: unknown
-    ): createPostInputDTO {
+// export interface editPostInputDTO {
+//     id: string,
+//     content: string,
+// }
 
-        // if (id === undefined) throw new BadRequestError("'id' é obrigatório")
-        if (typeof id !== "string") throw new BadRequestError("'id' deve ser string")
+// export interface editPostOutputDTO {
+//     message: string,
+//     post: {
+//         content: string
+//     }
+// }
+// export interface deletePostInputDTO {
+//     id: string,
+// }
 
-        // if (creator_id === undefined) throw new BadRequestError("'name' é obrigatório")
-        if (typeof creator_id !== "string") throw new BadRequestError("'creator_id ' deve ser string")
+// export interface deletePostOutputDTO {
+//     message: string,
+// }
 
-        if (content === undefined) throw new BadRequestError("'content' é obrigatório")
-        if (typeof content !== "string") throw new BadRequestError("'content' deve ser string")
+// export interface likeDislikePostInputDTO {
+//     user_id: string,
+//     post_id: string,
+//     like: number
+// }
 
-        // if (likes === undefined) throw new BadRequestError("'likes' é obrigatório")
-        if (typeof likes !== "number") throw new BadRequestError("'password' deve ser number")
+// export interface likeDislikePostOutputDTO {
+//     message: string,
+// }
 
-        // if (dislikes === undefined) throw new BadRequestError("'dislikes' é obrigatório")
-        if (typeof dislikes !== "number") throw new BadRequestError("'dislikes' deve ser number")
+// export class PostDTO {
+//     public createPostInput(
+//         id: unknown,
+//         creator_id: unknown,
+//         content: unknown,
+//         likes: unknown,
+//         dislikes: unknown
+//     ): createPostInputDTO {
 
-        const dto: createPostInputDTO = {
-            id,
-            creator_id,
-            content,
-            likes,
-            dislikes
-        }
+//         // if (id === undefined) throw new BadRequestError("'id' é obrigatório")
+//         if (typeof id !== "string") throw new BadRequestError("'id' deve ser string")
 
-        return dto
-    }
+//         // if (creator_id === undefined) throw new BadRequestError("'name' é obrigatório")
+//         if (typeof creator_id !== "string") throw new BadRequestError("'creator_id ' deve ser string")
 
-    public createPostOutput(post: Post): createPostOutputDTO {
-        const dto: createPostOutputDTO = {
-            message: "Post criado com sucesso!",
-            post: {
-                content: post.getContent()
-            }
-        }
+//         if (content === undefined) throw new BadRequestError("'content' é obrigatório")
+//         if (typeof content !== "string") throw new BadRequestError("'content' deve ser string")
 
-        return dto
-    }
+//         // if (likes === undefined) throw new BadRequestError("'likes' é obrigatório")
+//         if (typeof likes !== "number") throw new BadRequestError("'password' deve ser number")
 
-    public editPostInput(
-        id: unknown,
-        content: unknown
-    ): editPostInputDTO {
-        if (typeof id !== "string") {
-            throw new BadRequestError("'id' deve ser string")
-        }
+//         // if (dislikes === undefined) throw new BadRequestError("'dislikes' é obrigatório")
+//         if (typeof dislikes !== "number") throw new BadRequestError("'dislikes' deve ser number")
 
-        if (typeof content !== "string") {
-            throw new BadRequestError("'content' deve ser string")
-        }
+//         const dto: createPostInputDTO = {
+//             id,
+//             creator_id,
+//             content,
+//             likes,
+//             dislikes
+//         }
 
-        const dto: editPostInputDTO = {
-            id,
-            content
-        }
+//         return dto
+//     }
 
-        return dto
-    }
+//     public createPostOutput(post: Post): createPostOutputDTO {
+//         const dto: createPostOutputDTO = {
+//             message: "Post criado com sucesso!",
+//             post: {
+//                 content: post.getContent()
+//             }
+//         }
 
-    public editPostOutput(post: Post): editPostOutputDTO {
-        const dto: editPostOutputDTO = {
-            message: "Post editado com sucesso!",
-            post: {
-                content: post.getContent()
-            }
-        }
+//         return dto
+//     }
 
-        return dto
-    }
+//     public editPostInput(
+//         id: unknown,
+//         content: unknown
+//     ): editPostInputDTO {
+//         if (typeof id !== "string") {
+//             throw new BadRequestError("'id' deve ser string")
+//         }
 
-    public deletePostInput(
-        id: unknown
-    ): deletePostInputDTO {
+//         if (typeof content !== "string") {
+//             throw new BadRequestError("'content' deve ser string")
+//         }
 
-        if (typeof id !== "string") {
-            throw new BadRequestError("'id' deve ser string")
-        }
+//         const dto: editPostInputDTO = {
+//             id,
+//             content
+//         }
 
-        const dto: deletePostInputDTO = {
-            id
-        }
+//         return dto
+//     }
 
-        return dto
-    }
+//     public editPostOutput(post: Post): editPostOutputDTO {
+//         const dto: editPostOutputDTO = {
+//             message: "Post editado com sucesso!",
+//             post: {
+//                 content: post.getContent()
+//             }
+//         }
 
-    public deletePostOutput(post: Post): deletePostOutputDTO {
-        const dto: deletePostOutputDTO = {
-            message: "Post deletado com sucesso!",
-        }
+//         return dto
+//     }
 
-        return dto
-    }
+//     public deletePostInput(
+//         id: unknown
+//     ): deletePostInputDTO {
 
-    public likeDislikePost(
-        user_id: unknown,
-        post_id: unknown,
-        like: unknown
-    ) {
-            if (typeof user_id !== "string") {
-              throw new BadRequestError("O 'id' deve ser string")
-            }
+//         if (typeof id !== "string") {
+//             throw new BadRequestError("'id' deve ser string")
+//         }
+
+//         const dto: deletePostInputDTO = {
+//             id
+//         }
+
+//         return dto
+//     }
+
+//     public deletePostOutput(post: Post): deletePostOutputDTO {
+//         const dto: deletePostOutputDTO = {
+//             message: "Post deletado com sucesso!",
+//         }
+
+//         return dto
+//     }
+
+//     public likeDislikePost(
+//         user_id: unknown,
+//         post_id: unknown,
+//         like: unknown
+//     ) {
+//             if (typeof user_id !== "string") {
+//               throw new BadRequestError("O 'id' deve ser string")
+//             }
     
-            if (typeof post_id !== "string") {
-              throw new BadRequestError("O 'id' deve ser string")
-            }
+//             if (typeof post_id !== "string") {
+//               throw new BadRequestError("O 'id' deve ser string")
+//             }
     
-            if (typeof like !== "number") {
-              throw new BadRequestError("O 'like' deve ser number")
-            }
+//             if (typeof like !== "number") {
+//               throw new BadRequestError("O 'like' deve ser number")
+//             }
 
-          const dto: likeDislikePostInputDTO = {
-            user_id,
-            post_id,
-            like
-        }
+//           const dto: likeDislikePostInputDTO = {
+//             user_id,
+//             post_id,
+//             like
+//         }
 
-        return dto
-    }
+//         return dto
+//     }
 
 
-}
+// }

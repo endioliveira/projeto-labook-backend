@@ -3,12 +3,13 @@ import { PostDB, PostModel } from "../types"
 export class Post {
     constructor(
         private id: string,
-        private creator_id: string,
         private content: string,
         private likes: number,
         private dislikes: number,
-        private created_at: string,
-        private updated_at: string,
+        private createdAt: string,
+        private updatedAt: string,
+        private creatorId: string,
+        private creatorName: string,
     ) {}
 
     getId(): string {
@@ -17,14 +18,6 @@ export class Post {
 
     setId(value: string): void {
         this.id = value
-    }
-
-    getCreatorId(): string {
-        return this.creator_id
-    }
-
-    setCreatorId(value: string): void {
-        this.creator_id = value
     }
 
     getContent(): string {
@@ -52,42 +45,61 @@ export class Post {
     }
 
     getCreatedAt(): string {
-        return this.created_at
+        return this.createdAt
     }
 
     setCreatedAt(value: string): void {
-        this.created_at = value
+        this.createdAt = value
     }
 
     getUpdatedAt(): string {
-        return this.updated_at
+        return this.updatedAt
     }
 
     setUpdatedAt(value: string): void {
-        this.updated_at = value
+        this.updatedAt = value
+    }
+
+    getCreatorId(): string {
+        return this.creatorId
+    }
+
+    setCreatorId(value: string): void {
+        this.creatorId = value
+    }
+
+    public getCreatorName(): string {
+        return this.creatorName
+    }
+
+    public setCreatorName(value: string): void {
+        this.creatorName = value
     }
 
     public toDBModel(): PostDB {
         return {
             id: this.id,
-            creator_id: this.creator_id,
+            creator_id: this.creatorId,
             content: this.content,
             likes: this.likes,
             dislikes: this.dislikes,
-            created_at: this.created_at,
-            updated_at: this.updated_at
+            created_at: this.createdAt,
+            updated_at: this.updatedAt
         }
     }
 
     public toBusinessModel(): PostModel {
         return {
             id: this.id,
-            creator_id: this.creator_id,
             content: this.content,
             likes: this.likes,
             dislikes: this.dislikes,
-            created_at: this.created_at,
-            updated_at: this.updated_at
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt,
+            creator: {
+                id: this.creatorId,
+                name: this.creatorName
+            }
         }
     }
 }
