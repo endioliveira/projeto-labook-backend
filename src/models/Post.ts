@@ -9,7 +9,7 @@ export class Post {
         private createdAt: string,
         private updatedAt: string,
         private creatorId: string,
-        private creatorName: string,
+        private name: string,
     ) {}
 
     getId(): string {
@@ -68,12 +68,12 @@ export class Post {
         this.creatorId = value
     }
 
-    public getCreatorName(): string {
-        return this.creatorName
+    public getName(): string {
+        return this.name
     }
 
-    public setCreatorName(value: string): void {
-        this.creatorName = value
+    public setName(value: string): void {
+        this.name = value
     }
 
     public toDBModel(): PostDB {
@@ -98,7 +98,7 @@ export class Post {
             updatedAt: this.updatedAt,
             creator: {
                 id: this.creatorId,
-                name: this.creatorName
+                name: this.name
             }
         }
     }
