@@ -1,58 +1,82 @@
+import { ROLES, UserDB, UserModel } from "../types"
+
 export class User {
     constructor(
         private id: string,
         private name: string,
         private email: string,
         private password: string,
-        private role: string,
-        private created_at: string,
+        private role: ROLES,
+        private createdAt: string
     ) {}
 
-    getId(): string {
+    public getId(): string {
         return this.id
     }
-
-    setId(value: string): void {
+    
+    public setId(value: string): void {
         this.id = value
     }
 
-    getName(): string {
+    public getName(): string {
         return this.name
     }
 
-    setName(value: string): void {
+    public setName(value: string): void {
         this.name = value
     }
 
-    getEmail(): string {
+    public getEmail(): string {
         return this.email
     }
 
-    setEmail(value: string): void {
+    public setEmail(value: string): void {
         this.email = value
     }
 
-    getPassword(): string {
+    public getPassword(): string {
         return this.password
     }
 
-    setPassword(value: string): void {
+    public setPassword(value: string): void {
         this.password = value
     }
 
-    getRole(): string {
+    public getRole(): ROLES {
         return this.role
     }
 
-    setRole(value: string): void {
+    public setRole(value: ROLES): void {
         this.role = value
     }
 
-    getCreatedAt(): string {
-        return this.created_at
+    public getCreatedAt(): string {
+        return this.createdAt
     }
 
-    setCreatedAt(value: string): void {
-        this.created_at = value
+    public setCreatedAt(value: string): void {
+        this.createdAt = value
+    }
+
+    public toDBModel(): UserDB {
+        return {
+            id: this.id,
+            name: this.name,
+            email: this.email,
+            password: this.password,
+            role: this.role,
+            created_at: this.createdAt
+        }
+    }
+
+    public toBusinessModel(): UserModel {
+        return {
+            id: this.id,
+            name: this.name,
+            email: this.email,
+            password: this.password,
+            role: this.role,
+            createdAt: this.createdAt
+        }
     }
 }

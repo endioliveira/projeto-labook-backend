@@ -17,6 +17,8 @@ CREATE TABLE posts (
     created_at TEXT DEFAULT (DATETIME()) NOT NULL,
     updated_at TEXT DEFAULT (DATETIME()) NOT NULL,
     FOREIGN KEY (creator_id) REFERENCES users(id)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE likes_dislikes(
@@ -24,7 +26,11 @@ CREATE TABLE likes_dislikes(
     post_id TEXT NOT NULL,
     like  INTEGER DEFAULT(0) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(id)
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
 );
 
 SELECT * FROM users;

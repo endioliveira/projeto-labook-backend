@@ -1,5 +1,12 @@
 import { BadRequestError } from "../errors/BadRequestError"
 import { Post } from "../models/Post"
+import { PostModel } from "../types"
+
+export interface GetPostsInputDTO {
+    q: unknown
+}
+
+export type GetPostsOutputDTO = PostModel[]
 
 export interface createPostInputDTO {
     id: string,
@@ -32,6 +39,16 @@ export interface deletePostInputDTO {
 }
 
 export interface deletePostOutputDTO {
+    message: string,
+}
+
+export interface likeDislikePostInputDTO {
+    user_id: string,
+    post_id: string,
+    like: number
+}
+
+export interface likeDislikePostOutputDTO {
     message: string,
 }
 
@@ -115,7 +132,7 @@ export class PostDTO {
     public deletePostInput(
         id: unknown
     ): deletePostInputDTO {
-        
+
         if (typeof id !== "string") {
             throw new BadRequestError("'id' deve ser string")
         }
@@ -134,4 +151,32 @@ export class PostDTO {
 
         return dto
     }
+
+    public likeDislikePost(
+        user_id: unknown,
+        post_id: unknown,
+        like: unknown
+    ) {
+            if (typeof user_id !== "string") {
+              throw new BadRequestError("O 'id' deve ser string")
+            }
+    
+            if (typeof post_id !== "string") {
+              throw new BadRequestError("O 'id' deve ser string")
+            }
+    
+            if (typeof like !== "number") {
+              throw new BadRequestError("O 'like' deve ser number")
+            }
+
+          const dto: likeDislikePostInputDTO = {
+            user_id,
+            post_id,
+            like
+        }
+
+        return dto
+    }
+
+
 }

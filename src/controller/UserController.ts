@@ -4,33 +4,30 @@ import { UserDatabase } from "../database/UserDatabase"
 import { User } from "../models/User"
 import { UserDB } from "../types"
 import { BaseError } from '../errors/BaseError'
-import { UserDTO } from "../dtos/UserDTO"
+import { LoginInputDTO, UserDTO, SignupInputDTO } from "../dtos/UserDTO"
 
 
 export class UserController {
   constructor(
     private userDTO: UserDTO,
     private userBusiness: UserBusiness,
-  ) {
+  ) {}
 
-  }
 
   signup = async (req: Request, res: Response) => {
     try {
       // const { id, name, email, password, role } = req.body as UserDB
 
-      const input = this.userDTO.signupInput(
-        req.body.id,
-        req.body.name,
-        req.body.email,
-        req.body.password,
-        req.body.role
-      )
+      const input: SignupInputDTO = {
+        name: req.body.name,
+        email:req.body.email,
+        password: req.body.password
+      }
 
       //chamar o método da business correspondente
       const output = await this.userBusiness.signup(input)
 
-      res.status(201).send("um token jwt")
+      res.status(201).send(output)
 
     } catch (error) {
       console.log(error)
@@ -45,12 +42,17 @@ export class UserController {
 
   login = async (req: Request, res: Response) => {
     try {
-      const name = req.query.name as string | undefined
+      // const name = req.query.name as string | undefined
+
+      const input: LoginInputDTO = {
+        email: req.body.email,
+        password: req.body.password
+      }
 
       //tratamento e regras
-      const output = await this.userBusiness.login(name)
+      const output = await this.userBusiness.login(input)
 
-      res.status(200).send({ output: "um token jwt" })
+      res.status(200).send(output)
     } catch (error) {
       console.log(error)
 
