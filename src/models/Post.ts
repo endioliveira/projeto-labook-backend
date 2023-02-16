@@ -1,3 +1,5 @@
+import { PostDB, PostModel } from "../types"
+
 export class Post {
     constructor(
         private id: string,
@@ -63,5 +65,29 @@ export class Post {
 
     setUpdatedAt(value: string): void {
         this.updated_at = value
+    }
+
+    public toDBModel(): PostDB {
+        return {
+            id: this.id,
+            creator_id: this.creator_id,
+            content: this.content,
+            likes: this.likes,
+            dislikes: this.dislikes,
+            created_at: this.created_at,
+            updated_at: this.updated_at
+        }
+    }
+
+    public toBusinessModel(): PostModel {
+        return {
+            id: this.id,
+            creator_id: this.creator_id,
+            content: this.content,
+            likes: this.likes,
+            dislikes: this.dislikes,
+            created_at: this.created_at,
+            updated_at: this.updated_at
+        }
     }
 }

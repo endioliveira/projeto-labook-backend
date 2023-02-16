@@ -91,8 +91,6 @@ export class PostController {
       const input = {
         id: req.params.id
       }
-
-
       const output = await this.postBusiness.deletePost(input)
       
       res.status(200).send({ output: "Post deletado com sucesso!" })
@@ -108,61 +106,47 @@ export class PostController {
     }
   }
 
-  likeDislikePost = async (req: Request, res: Response) => {
-    try {
-      const post_id = req.params.id
-      const { user_id, like } = req.body as LikeDislikeDB
-      const likeDislikeDBInstance = new LikeDislikeDatabase()
+  // likeDislikePost = async (req: Request, res: Response) => {
+  //   try {
+  //     // const post_id = req.params.id
+  //     // const { user_id, like } = req.body as LikeDislikeDB
 
-      if (user_id !== undefined) {
-        if (typeof user_id !== "string") {
-          res.status(400)
-          throw new Error("O 'id' deve ser string")
-        }
-      }
+  //     // const input = { 
+  //     // user_id: req.body.user_id,
+  //     // post_id: req.params.id,
+  //     // like: req.body.like
+  //     // }
+      
+  //     // const likeDislikeDBInstance = new LikeDislikeDatabase()
 
-      if (post_id !== undefined) {
-        if (typeof post_id !== "string") {
-          res.status(400)
-          throw new Error("O 'id' deve ser string")
-        }
-      }
+  //     // const newLikeDislike = new LikeDislike(
+  //     //   user_id,
+  //     //   post_id,
+  //     //   like
+  //     // )
 
-      if (like !== undefined) {
-        if (typeof like !== "number") {
-          res.status(400)
-          throw new Error("O 'like' deve ser number")
-        }
-      }
+  //     // const newLikeDislikeDB: LikeDislikeDB = {
+  //     //   user_id: newLikeDislike.getUserId(),
+  //     //   post_id: newLikeDislike.getPostId(),
+  //     //   like: newLikeDislike.getLike()
+  //     // }
 
-      const newLikeDislike = new LikeDislike(
-        user_id,
-        post_id,
-        like
-      )
+  //     // const getLike = await likeDislikeDBInstance.findLikeDislikeByUserIdPostId(newLikeDislike)
 
-      const newLikeDislikeDB: LikeDislikeDB = {
-        user_id: newLikeDislike.getUserId(),
-        post_id: newLikeDislike.getPostId(),
-        like: newLikeDislike.getLike()
-      }
-
-      const getLike = await likeDislikeDBInstance.findLikeDislikeByUserIdPostId(newLikeDislike)
-
-      // await likeDislikeDBInstance.insertLikeDislike(newLikeDislike)
+  //     // await likeDislikeDBInstance.insertLikeDislike(newLikeDislike)
 
 
-      res.status(200).send(getLike)
+  //     const output = await this.postBusiness.deletePost(input)
 
 
-    } catch (error) {
-      console.log(error)
+  //   } catch (error) {
+  //     console.log(error)
 
-      if (error instanceof BaseError) {
-        res.status(error.statusCode).send(error.message) 
-      } else {
-        res.status(500).send("Erro inesperado")
-      }
-    }
-  }
+  //     if (error instanceof BaseError) {
+  //       res.status(error.statusCode).send(error.message) 
+  //     } else {
+  //       res.status(500).send("Erro inesperado")
+  //     }
+  //   }
+  // }
 }
