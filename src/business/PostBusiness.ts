@@ -1,158 +1,169 @@
-// import { PostDatabase } from "../database/PostDatabase";
-// import { Post } from "../models/Post"
-// import { LikeDislikeDB, PostDB } from "../types"
-// import { BadRequestError } from '../errors/BadRequestError'
-// import { createPostInputDTO, PostDTO, createPostOutputDTO, editPostInputDTO, editPostOutputDTO, deletePostInputDTO, deletePostOutputDTO, GetPostsOutputDTO } from "../dtos/PostDTO";
-// import { LikeDislikeDatabase } from "../database/LikeDislikeDatabase";
-// import { LikeDislike } from "../models/LikeDislike";
-// import { IdGenerator } from "../services/IdGenerator";
-// import { TokenManager, TokenPayload } from "../services/TokenManager";
+import { PostDatabase } from "../database/PostDatabase";
+import { Post } from "../models/Post"
+import { BadRequestError } from '../errors/BadRequestError'
+import { GetPostsInputDTO, GetPostsOutputDTO } from "../dtos/PostDTO";
+import { IdGenerator } from "../services/IdGenerator";
+import { TokenManager, TokenPayload } from "../services/TokenManager";
+import { PostCreatorsDB } from "../types";
 
-// export class PostBusiness {
-//     constructor(
-//         private postDBInstance: PostDatabase,
-//         private postDTO: PostDTO,
-//         private idGenerator: IdGenerator,
-//         private tokenManager: TokenManager
+export class PostBusiness {
+    constructor(
+        private postDatabase: PostDatabase,
+        private idGenerator: IdGenerator,
+        private tokenManager: TokenManager
 
-//     ){}
-//     public getPosts = async (q: string | undefined) => {
+    ){}
+
+    public getPosts = async (input: GetPostsInputDTO): Promise<GetPostsOutputDTO> => {
+        const { token } = input
+
+        if(token === undefined) {
+            throw new BadRequestError("Insira o 'token'")
+        }
+
+        const payload = this.tokenManager.getPayload(token)
+
+        if (payload === null) {
+            throw new BadRequestError("O 'token' não é válido!")
+        }
+
+        const postsCreatorsDB: PostCreatorsDB[] = await this.postDatabase.getPostsCreators()
+
+        const posts = postsCreatorsDB.map((postCreatorDB) => {
+            const post = new Post(
+                postCreatorDB.id,
+                postCreatorDB.content,
+                postCreatorDB.likes,
+                postCreatorDB.dislikes,
+                postCreatorDB.created_at,
+                postCreatorDB.updated_at,
+                postCreatorDB.creator_id,
+                postCreatorDB.name
+            )
+
+            return post.toBusinessModel()
+        })
+
+        const output: GetPostsOutputDTO = posts
         
-//         const postsDB: PostDB[] = await new PostDatabase().findPost(q)
+        return output
+    }
 
-//         const posts: Post[] = postsDB.map(
-//             (postDB) =>
-//                 new Post(
-//                     postDB.id,
-//                     postDB.creator_id,
-//                     postDB.content,
-//                     postDB.likes,
-//                     postDB.dislikes,
-//                     postDB.created_at,
-//                     postDB.updated_at
-//                 )
-//         )
+    // public createPost = async (input: createPostInputDTO) => {
 
-//         const output = posts
+    //     const { id ,creator_id, content, likes, dislikes } = input
 
-//         return output
-//     }
-
-//     public createPost = async (input: createPostInputDTO) => {
-
-//         const { id ,creator_id, content, likes, dislikes } = input
-
-//         // const id = this.idGenerator.generate()
+    //     // const id = this.idGenerator.generate()
         
-//         const newPost = new Post(
-//             id,
-//             creator_id,
-//             content,
-//             likes,
-//             dislikes,
-//             new Date().toISOString(),
-//             new Date().toISOString()
-//         )
+    //     const newPost = new Post(
+    //         id,
+    //         creator_id,
+    //         content,
+    //         likes,
+    //         dislikes,
+    //         new Date().toISOString(),
+    //         new Date().toISOString()
+    //     )
 
-//         const newPostDB: PostDB = {
-//             id: newPost.getId(),
-//             creator_id: newPost.getCreatorId(),
-//             content: newPost.getContent(),
-//             likes: newPost.getLikes(),
-//             dislikes: newPost.getDislikes(),
-//             created_at: newPost.getCreatedAt(),
-//             updated_at: newPost.getUpdatedAt(),
-//         }
+    //     const newPostDB: PostDB = {
+    //         id: newPost.getId(),
+    //         creator_id: newPost.getCreatorId(),
+    //         content: newPost.getContent(),
+    //         likes: newPost.getLikes(),
+    //         dislikes: newPost.getDislikes(),
+    //         created_at: newPost.getCreatedAt(),
+    //         updated_at: newPost.getUpdatedAt(),
+    //     }
 
-//         await this.postDBInstance.insertPost(newPost)
-
-
-//         const output = this.postDTO.createPostOutput(newPost)
-
-//         // const output = {
-//         //     message: "Post realizado com sucesso!",
-//         //     post: {
-//         //         content
-//         //     }
-//         // }
-
-//         return output
-//     }
-
-//     public editPost = async (input: editPostInputDTO): Promise<editPostOutputDTO> => {
-//         const { id, content } = input
-
-//         // const id = this.idGenerator.generate()
-
-//         const postExist: PostDB | undefined = await this.postDBInstance.findPostById(id)
-
-//         if (!postExist) {
-//             throw new BadRequestError("'id' não encontrado")
-//         }
-
-//         const updatePost = new Post(
-//             postExist.id,
-//             postExist.creator_id,
-//             postExist.content,
-//             postExist.likes,
-//             postExist.dislikes,
-//             new Date().toISOString(),
-//             new Date().toISOString()
-//         )
-
-//         content && updatePost.setContent(content)
-
-//         await this.postDBInstance.updatePost({ id, content } as PostDB)
-
-//         const output = this.postDTO.editPostOutput(updatePost)
-
-//         return output
-//     }
+    //     await this.postDBInstance.insertPost(newPost)
 
 
-//     public deletePost = async (input: deletePostInputDTO): Promise <deletePostOutputDTO> => {
+    //     const output = this.postDTO.createPostOutput(newPost)
 
-//         const { id } = input
+    //     // const output = {
+    //     //     message: "Post realizado com sucesso!",
+    //     //     post: {
+    //     //         content
+    //     //     }
+    //     // }
 
-//         const postExist = await this.postDBInstance.findPostById(id)
+    //     return output
+    // }
 
-//         if (!postExist) {
-//             throw new BadRequestError("'id' não encontrado")
-//         }
+    // public editPost = async (input: editPostInputDTO): Promise<editPostOutputDTO> => {
+    //     const { id, content } = input
 
-//         const deletePost = new Post(
-//             postExist.id,
-//             postExist.creator_id,
-//             postExist.content,
-//             postExist.likes,
-//             postExist.dislikes,
-//             new Date().toISOString(),
-//             new Date().toISOString()
-//         )
+    //     // const id = this.idGenerator.generate()
 
-//         await this.postDBInstance.deletePost(deletePost)
+    //     const postExist: PostDB | undefined = await this.postDBInstance.findPostById(id)
 
-//         const output = this.postDTO.deletePostOutput(deletePost)
+    //     if (!postExist) {
+    //         throw new BadRequestError("'id' não encontrado")
+    //     }
 
-//         return output
-//     }
+    //     const updatePost = new Post(
+    //         postExist.id,
+    //         postExist.creator_id,
+    //         postExist.content,
+    //         postExist.likes,
+    //         postExist.dislikes,
+    //         new Date().toISOString(),
+    //         new Date().toISOString()
+    //     )
 
-//     // public likeDislikePost = async(req: Request, res: Response) => {
+    //     content && updatePost.setContent(content)
 
-//     //     const likeDislikeDBInstance = new LikeDislikeDatabase()
+    //     await this.postDBInstance.updatePost({ id, content } as PostDB)
 
-//     //   const newLikeDislike = new LikeDislike(
-//     //     user_id,
-//     //     post_id,
-//     //     like
-//     //   )
+    //     const output = this.postDTO.editPostOutput(updatePost)
 
-//     //   const newLikeDislikeDB: LikeDislikeDB = {
-//     //     user_id: newLikeDislike.getUserId(),
-//     //     post_id: newLikeDislike.getPostId(),
-//     //     like: newLikeDislike.getLike()
-//     //   }
+    //     return output
+    // }
 
-//     //   const getLike = await likeDislikeDBInstance.findLikeDislikeByUserIdPostId(newLikeDislike)
 
-// }
+    // public deletePost = async (input: deletePostInputDTO): Promise <deletePostOutputDTO> => {
+
+    //     const { id } = input
+
+    //     const postExist = await this.postDBInstance.findPostById(id)
+
+    //     if (!postExist) {
+    //         throw new BadRequestError("'id' não encontrado")
+    //     }
+
+    //     const deletePost = new Post(
+    //         postExist.id,
+    //         postExist.creator_id,
+    //         postExist.content,
+    //         postExist.likes,
+    //         postExist.dislikes,
+    //         new Date().toISOString(),
+    //         new Date().toISOString()
+    //     )
+
+    //     await this.postDBInstance.deletePost(deletePost)
+
+    //     const output = this.postDTO.deletePostOutput(deletePost)
+
+    //     return output
+    // }
+
+    // public likeDislikePost = async(req: Request, res: Response) => {
+
+    //     const likeDislikeDBInstance = new LikeDislikeDatabase()
+
+    //   const newLikeDislike = new LikeDislike(
+    //     user_id,
+    //     post_id,
+    //     like
+    //   )
+
+    //   const newLikeDislikeDB: LikeDislikeDB = {
+    //     user_id: newLikeDislike.getUserId(),
+    //     post_id: newLikeDislike.getPostId(),
+    //     like: newLikeDislike.getLike()
+    //   }
+
+    //   const getLike = await likeDislikeDBInstance.findLikeDislikeByUserIdPostId(newLikeDislike)
+
+}

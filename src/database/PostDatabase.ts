@@ -1,88 +1,61 @@
-import { Post } from "../models/Post";
+import { Post } from "../models/Post"
+import { PostDB, PostCreatorsDB } from "../types"
 import { BaseDatabase } from "./BaseDatabase"
-import { PostDB } from "../types"
-
 
 export class PostDatabase extends BaseDatabase {
-    static TABLE_POSTS = "posts"
+  static TABLE_POSTS = "posts"
 
-    private async checkPost(
-      id?: string | undefined,
-      creator_id?: string,
-      content?: string,
-      likes?: number,
-      dislikes?: number,
-      created_at?: string,
-      updated_at?: string
-    ): Promise <void> {
 
-      if (id) {
-        const [postsDB]: PostDB[] = await BaseDatabase.connection(
-          PostDatabase.TABLE_POSTS
-        ).where({ id: id })
-        if (postsDB) {
-          throw new Error("'id' já cadastrado.")
-        }
-      }
-
-    }
-
-    async insertPost(parameter: Post): Promise <void> {
-
-      await this.checkPost(
-        parameter.getId() as string,
-        parameter.getCreatorId() as string,
-        parameter.getContent() as string,
-        parameter.getLikes() as number,
-        parameter.getDislikes() as number,
-        parameter.getCreatedAt() as string,
-        parameter.getUpdatedAt() as string,
+  public async getPostsCreators() {
+    const result: PostCreatorsDB[] = await BaseDatabase
+      .connection(PostDatabase.TABLE_POSTS)
+      .select(
+        "posts.id",
+        "posts.creator_id",
+        "posts.content",
+        "posts.likes",
+        "posts.dislikes",
+        "posts.created_at",
+        "posts.updated_at",
+        "users.name"
       )
+      .join("users", "posts.creator_id", "=", "users.id")
 
-      await BaseDatabase.connection(PostDatabase.TABLE_POSTS).insert(parameter)
-    }
-
-    async findPost(parameter: string | undefined): Promise <PostDB[]> {
-      let result
-  
-      if (parameter) {
-        const postsDB: PostDB[] = await BaseDatabase.connection(
-          PostDatabase.TABLE_POSTS
-        ).where("content", "LIKE", `%${parameter}%`)
-  
-        result = postsDB
-      } else {
-        const postsDB: PostDB[] = await BaseDatabase.connection(
-          PostDatabase.TABLE_POSTS
-        )
-        result = postsDB
-      }
-  
       return result
-    }
-
-    async findPostById(parameter: string): Promise <PostDB | undefined> {
-      const [postDB]: PostDB[] | undefined[] = await BaseDatabase.connection(
-        PostDatabase.TABLE_POSTS
-      ).where({ id: parameter })
-  
-      return postDB
-    }
-  
-    async updatePost({id, content }:PostDB):Promise<void> {
-
-      await this.checkPost(
-        content
-      )
-  
-      await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
-        .update({ content })
-        .where({id})
-    }
-  
-    async deletePost(parameter: Post) :Promise<void> {
-      await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
-        .delete()
-        .where({ id: parameter.getId() })
-    }
   }
+
+  // public async insertPost(newPostDB: PostDB) {
+  //   await BaseDatabase
+  //     .connection(PostDatabase.TABLE_POSTS)
+  //     .insert(newPostDB)
+  // }
+
+  // public async findPosts(q: string | undefined) {
+  //   let postsDB
+
+  //   if (q) {
+  //     const result: PostDB[] = await BaseDatabase
+  //       .connection(PostDatabase.TABLE_POSTS)
+  //       .where("name", "LIKE", `%${q}%`)
+
+  //     postsDB = result
+  //   } else {
+  //     const result: PostDB[] = await BaseDatabase
+  //       .connection(PostDatabase.TABLE_POSTS)
+
+  //     postsDB = result
+  //   }
+
+  //   return postsDB
+  // }
+
+  // public async findPostById(id: string) {
+  //   const [postDB]: PostDB[] | undefined[] = await BaseDatabase
+  //     .connection(PostDatabase.TABLE_POSTS)
+  //     .where({ id })
+
+  //   return postDB
+  // }
+
+
+}

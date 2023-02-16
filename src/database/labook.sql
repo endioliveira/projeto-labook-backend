@@ -61,3 +61,15 @@ VALUES ("u001", "p001", 0),
        ("u002", "p002", 0),
        ("u003", "p003", 0);
 
+SELECT 
+    posts.id,
+    posts.creator_id,
+    posts.content,
+    posts.likes,
+    posts.dislikes,
+    posts.created_at,
+    posts.updated_at,
+    users.name 
+FROM posts
+JOIN users
+ON posts.creator_id = users.id;
