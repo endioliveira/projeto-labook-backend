@@ -4,19 +4,18 @@ import { UserDatabase } from "../database/UserDatabase"
 import { User } from "../models/User"
 import { UserDB } from "../types"
 import { BaseError } from '../errors/BaseError'
-import { LoginInputDTO, UserDTO, SignupInputDTO } from "../dtos/UserDTO"
+import { LoginInputDTO,  SignupInputDTO } from "../dtos/UserDTO"
 
 
 export class UserController {
   constructor(
-    private userDTO: UserDTO,
-    private userBusiness: UserBusiness,
+    // private userDTO: UserDTO,
+    private userBusiness: UserBusiness
   ) {}
 
 
-  signup = async (req: Request, res: Response) => {
+  public signup = async (req: Request, res: Response) => {
     try {
-      // const { id, name, email, password, role } = req.body as UserDB
 
       const input: SignupInputDTO = {
         name: req.body.name,
@@ -40,28 +39,28 @@ export class UserController {
     }
   }
 
-  login = async (req: Request, res: Response) => {
-    try {
-      // const name = req.query.name as string | undefined
+  // public login = async (req: Request, res: Response) => {
+  //   try {
+  //     // const name = req.query.name as string | undefined
 
-      const input: LoginInputDTO = {
-        email: req.body.email,
-        password: req.body.password
-      }
+  //     const input: LoginInputDTO = {
+  //       email: req.body.email,
+  //       password: req.body.password
+  //     }
 
-      //tratamento e regras
-      const output = await this.userBusiness.login(input)
+  //     //tratamento e regras
+  //     const output = await this.userBusiness.login(input)
 
-      res.status(200).send(output)
-    } catch (error) {
-      console.log(error)
+  //     res.status(200).send(output)
+  //   } catch (error) {
+  //     console.log(error)
 
-      if (error instanceof BaseError) {
-        res.status(error.statusCode).send(error.message)
-      } else {
-        res.status(500).send("Erro inesperado")
-      }
-    }
-  }
+  //     if (error instanceof BaseError) {
+  //       res.status(error.statusCode).send(error.message)
+  //     } else {
+  //       res.status(500).send("Erro inesperado")
+  //     }
+  //   }
+  // }
 }
 

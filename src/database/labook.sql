@@ -24,8 +24,8 @@ CREATE TABLE posts (
 CREATE TABLE likes_dislikes(
     user_id TEXT NOT NULL,
     post_id TEXT NOT NULL,
-    like  INTEGER DEFAULT(0) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    like INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
         ON DELETE CASCADE 
         ON UPDATE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(id)
@@ -42,12 +42,12 @@ DROP TABLE posts;
 DROP TABLE likes_dislikes;
 
 INSERT INTO users (id, name, email, password, role)
-VALUES ("u001", "Virgínia Fonseca", "vivi22@email.com", "f12345#", "normal"),
-       ("u002", "Mirella Santos", "milla_ss@email.com", "mi54321*", "admin"),
-       ("u003", "Daniel Lima", "dani_lima@email.com", "lima12654%", "normal"),
-       ("u004", "Sarah Oliveira", "sarinhah@email.com", "sarahholiver12", "admin"),
-       ("u005", "Mônica Silva", "moni_silva@email.com", "monica123@", "normal"),
-       ("u006", "Felipe Rodrigues", "felipe@email.com", "felipe5#", "admin");
+VALUES ("u001", "Virgínia Fonseca", "vivi22@email.com", "f12345#", "NORMAL"),
+       ("u002", "Mirella Santos", "milla_ss@email.com", "mi54321*", "ADMIN"),
+       ("u003", "Daniel Lima", "dani_lima@email.com", "lima12654%", "NORMAL"),
+       ("u004", "Sarah Oliveira", "sarinhah@email.com", "sarahholiver12", "ADMIN"),
+       ("u005", "Mônica Silva", "moni_silva@email.com", "monica123@", "NORMAL"),
+       ("u006", "Felipe Rodrigues", "felipe@email.com", "felipe5#", "NORMAL");
 
 INSERT INTO posts (id, creator_id, content)
 VALUES ("p001", "u001", "Resiliência é ter força dentro de si para sempre recomeçar."),
@@ -56,8 +56,8 @@ VALUES ("p001", "u001", "Resiliência é ter força dentro de si para sempre rec
        ("p004", "u003", "Começando os estudos de JavaScript! :D");     
 
    
-INSERT INTO likes_dislikes (user_id, post_id)
-VALUES ("u001", "p001" ),
-       ("u002", "p002"),
-       ("u003", "p003");
+INSERT INTO likes_dislikes (user_id, post_id, like)
+VALUES ("u001", "p001", 0),
+       ("u002", "p002", 0),
+       ("u003", "p003", 0);
 

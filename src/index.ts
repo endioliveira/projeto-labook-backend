@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import { userRouter } from './router/userRouter'
-import { postRouter } from './router/postRouter'
+// import { postRouter } from './router/postRouter'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -17,4 +17,4 @@ app.listen(Number(process.env.PORT), () => {
 
 app.use("/users", userRouter) // middleware de rota de users
 
-app.use("/posts", postRouter)
+// app.use("/posts", postRouter)
