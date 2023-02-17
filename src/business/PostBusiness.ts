@@ -1,7 +1,7 @@
 import { PostDatabase } from "../database/PostDatabase";
 import { Post } from "../models/Post"
 import { BadRequestError } from '../errors/BadRequestError'
-import { CreatePostInputDTO, EditPostInputDTO, GetPostsInputDTO, GetPostsOutputDTO } from "../dtos/PostDTO";
+import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, GetPostsInputDTO, GetPostsOutputDTO } from "../dtos/PostDTO";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager, TokenPayload } from "../services/TokenManager";
 import { PostCreatorsDB, PostDB } from "../types";
@@ -140,32 +140,5 @@ export class PostBusiness {
 
     }
 
-
-    // public deletePost = async (input: deletePostInputDTO): Promise <deletePostOutputDTO> => {
-
-    //     const { id } = input
-
-    //     const postExist = await this.postDBInstance.findPostById(id)
-
-    //     if (!postExist) {
-    //         throw new BadRequestError("'id' não encontrado")
-    //     }
-
-    //     const deletePost = new Post(
-    //         postExist.id,
-    //         postExist.creator_id,
-    //         postExist.content,
-    //         postExist.likes,
-    //         postExist.dislikes,
-    //         new Date().toISOString(),
-    //         new Date().toISOString()
-    //     )
-
-    //     await this.postDBInstance.deletePost(deletePost)
-
-    //     const output = this.postDTO.deletePostOutput(deletePost)
-
-    //     return output
-    // }
 
 }

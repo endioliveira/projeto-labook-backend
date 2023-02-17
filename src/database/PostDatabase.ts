@@ -5,7 +5,6 @@ import { BaseDatabase } from "./BaseDatabase"
 export class PostDatabase extends BaseDatabase {
   static TABLE_POSTS = "posts"
 
-
   public async getPostsCreators() {
     const result: PostCreatorsDB[] = await BaseDatabase
       .connection(PostDatabase.TABLE_POSTS)
@@ -30,25 +29,6 @@ export class PostDatabase extends BaseDatabase {
       .insert(newPostDB)
   }
 
-  // public async findPosts(q: string | undefined) {
-  //   let postsDB
-
-  //   if (q) {
-  //     const result: PostDB[] = await BaseDatabase
-  //       .connection(PostDatabase.TABLE_POSTS)
-  //       .where("name", "LIKE", `%${q}%`)
-
-  //     postsDB = result
-  //   } else {
-  //     const result: PostDB[] = await BaseDatabase
-  //       .connection(PostDatabase.TABLE_POSTS)
-
-  //     postsDB = result
-  //   }
-
-  //   return postsDB
-  // }
-
   public async findPostById(id: string) {
     const [postDB]: PostDB[] | undefined[] = await BaseDatabase
       .connection(PostDatabase.TABLE_POSTS)
@@ -63,4 +43,5 @@ export class PostDatabase extends BaseDatabase {
      .where({ id }) 
 
   }
+
 }
