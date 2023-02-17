@@ -1,10 +1,10 @@
 import { PostDatabase } from "../database/PostDatabase";
 import { Post } from "../models/Post"
 import { BadRequestError } from '../errors/BadRequestError'
-import { CreatePostInputDTO, EditPostInputDTO, GetPostsInputDTO, GetPostsOutputDTO } from "../dtos/PostDTO";
+import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, GetPostsInputDTO, GetPostsOutputDTO } from "../dtos/PostDTO";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager, TokenPayload } from "../services/TokenManager";
-import { PostCreatorsDB, PostDB } from "../types";
+import { PostCreatorsDB, PostDB, ROLES } from "../types";
 
 export class PostBusiness {
     constructor(
@@ -141,31 +141,33 @@ export class PostBusiness {
     }
 
 
-    // public deletePost = async (input: deletePostInputDTO): Promise <deletePostOutputDTO> => {
+    public deletePost = async (input: DeletePostInputDTO): Promise<void> => {
 
-    //     const { id } = input
+        const { idDelete, token } = input
 
-    //     const postExist = await this.postDBInstance.findPostById(id)
+         if (token === undefined) {
+            throw new BadRequestError("Insira o 'token'")
+        }
 
-    //     if (!postExist) {
-    //         throw new BadRequestError("'id' não encontrado")
-    //     }
+        const payload = this.tokenManager.getPayload(token)
 
-    //     const deletePost = new Post(
-    //         postExist.id,
-    //         postExist.creator_id,
-    //         postExist.content,
-    //         postExist.likes,
-    //         postExist.dislikes,
-    //         new Date().toISOString(),
-    //         new Date().toISOString()
-    //     )
+        if (payload === null) {
+            throw new BadRequestError("O 'token' não é válido!")
+        }
 
-    //     await this.postDBInstance.deletePost(deletePost)
+        const postExist = await this.postDatabase.findPostById(idDelete)
 
-    //     const output = this.postDTO.deletePostOutput(deletePost)
+        if (!postExist) {
+            throw new BadRequestError("O 'id' não foi encontrado!")
+        }
 
-    //     return output
-    // }
+        const creatorId = payload.id
 
+        if(payload.role !== ROLES.ADMIN && postExist.creator_id !== creatorId) {
+            throw new BadRequestError("Apenas quem criou ou um Admin pode deletar o post!")
+        }
+
+        await this.postDatabase.deletePost(idDelete)
+
+    }
 }
