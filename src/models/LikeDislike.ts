@@ -28,6 +28,4 @@ export class LikeDislike {
     setLike(value: number): void {
         this.like = value
     }
-
-   
 }

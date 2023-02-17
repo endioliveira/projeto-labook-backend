@@ -15,6 +15,6 @@ app.listen(Number(process.env.PORT), () => {
     console.log(`Servidor rodando na porta ${process.env.PORT}`)
 })
 
-app.use("/users", userRouter) // middleware de rota de users
+app.use("/users", userRouter) 
 
 app.use("/posts", postRouter)

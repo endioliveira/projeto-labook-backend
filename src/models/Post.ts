@@ -12,59 +12,75 @@ export class Post {
         private name: string,
     ) {}
 
-    getId(): string {
+    public getId(): string {
         return this.id
     }
 
-    setId(value: string): void {
+    public setId(value: string): void {
         this.id = value
     }
 
-    getContent(): string {
+    public getContent(): string {
         return this.content
     }
 
-    setContent(value: string): void {
+    public setContent(value: string): void {
         this.content = value
     }
 
-    getLikes(): number {
+    public getLikes(): number {
         return this.likes
     }
 
-    setLikes(value: number): void {
+    public setLikes(value: number): void {
         this.likes = value
     }
 
-    getDislikes(): number {
+    public addLike() {
+        this.likes += 1
+    }
+
+    public removeLike() {
+        this.likes -= 1
+    }
+
+    public addDislike() {
+        this.dislikes += 1
+    }
+
+    public removeDislike() {
+        this.dislikes -= 1
+    }
+
+    public getDislikes(): number {
         return this.dislikes
     }
 
-    seDislikes(value: number): void {
+    public seDislikes(value: number): void {
         this.dislikes = value
     }
 
-    getCreatedAt(): string {
+    public getCreatedAt(): string {
         return this.createdAt
     }
 
-    setCreatedAt(value: string): void {
+    public setCreatedAt(value: string): void {
         this.createdAt = value
     }
 
-    getUpdatedAt(): string {
+    public getUpdatedAt(): string {
         return this.updatedAt
     }
 
-    setUpdatedAt(value: string): void {
+    public setUpdatedAt(value: string): void {
         this.updatedAt = value
     }
 
-    getCreatorId(): string {
+    public getCreatorId(): string {
         return this.creatorId
     }
 
-    setCreatorId(value: string): void {
+    public setCreatorId(value: string): void {
         this.creatorId = value
     }
 
