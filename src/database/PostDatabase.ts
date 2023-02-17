@@ -30,24 +30,7 @@ export class PostDatabase extends BaseDatabase {
       .insert(newPostDB)
   }
 
-  // public async findPosts(q: string | undefined) {
-  //   let postsDB
 
-  //   if (q) {
-  //     const result: PostDB[] = await BaseDatabase
-  //       .connection(PostDatabase.TABLE_POSTS)
-  //       .where("name", "LIKE", `%${q}%`)
-
-  //     postsDB = result
-  //   } else {
-  //     const result: PostDB[] = await BaseDatabase
-  //       .connection(PostDatabase.TABLE_POSTS)
-
-  //     postsDB = result
-  //   }
-
-  //   return postsDB
-  // }
 
   public async findPostById(id: string) {
     const [postDB]: PostDB[] | undefined[] = await BaseDatabase
@@ -58,9 +41,17 @@ export class PostDatabase extends BaseDatabase {
   }
 
   public async updatePost(id: string, postDB: PostDB): Promise<void> {
-     await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
-     .update(postDB)
-     .where({ id }) 
+    await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+      .update(postDB)
+      .where({ id })
 
   }
+
+  public async deletePost(id: string): Promise<void> {
+    await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+      .delete()
+      .where({ id })
+
+  }
+
 }

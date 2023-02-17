@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { PostBusiness } from "../business/PostBusiness"
 import { BaseError } from "../errors/BaseError"
-import { CreatePostInputDTO, GetPostsInputDTO } from "../dtos/PostDTO"
+import { CreatePostInputDTO, DeletePostInputDTO, GetPostsInputDTO } from "../dtos/PostDTO"
 
 export class PostController {
     constructor(
@@ -74,68 +74,26 @@ export class PostController {
         }
     }
 
-    //   deletePost = async (req: Request, res: Response) => {
-    //     try {
-    //       // const { id } = req.params
-    //       const input = {
-    //         id: req.params.id
-    //       }
-    //       const output = await this.postBusiness.deletePost(input)
+    public deletePost = async (req: Request, res: Response) => {
+        try {
+          const input: DeletePostInputDTO = {
+            idDelete: req.params.id,
+            token: req.headers.authorization
+          }
 
-    //       res.status(200).send({ output: "Post deletado com sucesso!" })
+         await this.postBusiness.deletePost(input)
 
-    //     } catch (error) {
-    //       console.log(error)
+        res.status(200).end()
 
-    //       if (error instanceof BaseError) {
-    //         res.status(error.statusCode).send(error.message) 
-    //       } else {
-    //         res.status(500).send("Erro inesperado")
-    //       }
-    //     }
-    //   }
+        } catch (error) {
+          console.log(error)
 
-    // likeDislikePost = async (req: Request, res: Response) => {
-    //   try {
-    //     // const post_id = req.params.id
-    //     // const { user_id, like } = req.body as LikeDislikeDB
+          if (error instanceof BaseError) {
+            res.status(error.statusCode).send(error.message) 
+          } else {
+            res.status(500).send("Erro inesperado")
+          }
+        }
+      }
 
-    //     // const input = { 
-    //     // user_id: req.body.user_id,
-    //     // post_id: req.params.id,
-    //     // like: req.body.like
-    //     // }
-
-    //     // const likeDislikeDBInstance = new LikeDislikeDatabase()
-
-    //     // const newLikeDislike = new LikeDislike(
-    //     //   user_id,
-    //     //   post_id,
-    //     //   like
-    //     // )
-
-    //     // const newLikeDislikeDB: LikeDislikeDB = {
-    //     //   user_id: newLikeDislike.getUserId(),
-    //     //   post_id: newLikeDislike.getPostId(),
-    //     //   like: newLikeDislike.getLike()
-    //     // }
-
-    //     // const getLike = await likeDislikeDBInstance.findLikeDislikeByUserIdPostId(newLikeDislike)
-
-    //     // await likeDislikeDBInstance.insertLikeDislike(newLikeDislike)
-
-
-    //     const output = await this.postBusiness.deletePost(input)
-
-
-    //   } catch (error) {
-    //     console.log(error)
-
-    //     if (error instanceof BaseError) {
-    //       res.status(error.statusCode).send(error.message) 
-    //     } else {
-    //       res.status(500).send("Erro inesperado")
-    //     }
-    //   }
-    // }
 }
