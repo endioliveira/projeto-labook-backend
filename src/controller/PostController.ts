@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { PostBusiness } from "../business/PostBusiness"
 import { BaseError } from "../errors/BaseError"
-import { GetPostsInputDTO } from "../dtos/PostDTO"
+import { CreatePostInputDTO, GetPostsInputDTO } from "../dtos/PostDTO"
 
 export class PostController {
     constructor(
@@ -28,60 +28,51 @@ export class PostController {
         }
     }
 
-    //   createPost = async (req: Request, res: Response) => {
-    //     try {
+    createPost = async (req: Request, res: Response) => {
+        try {
 
-    //       // const { id, creator_id, content, likes, dislikes, } = req.body as PostDB
+            const input: CreatePostInputDTO = {
+                token: req.headers.authorization,
+                content: req.body.content
+            }
 
-    //       const input = {
-    //         id: req.body.id,
-    //         creator_id: req.body.creator_id,
-    //         content: req.body.content,
-    //         likes: req.body.likes,
-    //         dislikes: req.body.dislikes
-    //       }
+            await this.postBusiness.createPost(input)
 
+            res.status(201).end()
 
-    //       const output = await this.postBusiness.createPost(input)
+        } catch (error) {
+            console.log(error)
 
-    //       res.status(201).send({ "content": output })
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.status(500).send("Erro inesperado")
+            }
+        }
+    }
 
-    //     } catch (error) {
-    //       console.log(error)
+    editPost = async (req: Request, res: Response) => {
+        try {
+            const input = {
+                idEdit: req.params.id,
+                content: req.body.content,
+                token: req.headers.authorization
+            }
 
-    //       if (error instanceof BaseError) {
-    //         res.status(error.statusCode).send(error.message) 
-    //       } else {
-    //         res.status(500).send("Erro inesperado")
-    //       }
-    //     }
-    //   }
+            await this.postBusiness.editPost(input)
 
-    //   editPost = async (req: Request, res: Response) => {
-    //     try {
-    //       // const id = req.params.id
-    //       // const { content } = req.body as UpdatePostDB
+            res.status(200).end()
 
-    //       const input = {
-    //         id: req.params.id,
-    //         content: req.body.content
-    //       }
+        } catch (error) {
+            console.log(error)
 
-
-    //       const output = await this.postBusiness.editPost(input)
-
-    //       res.status(201).send( output)
-
-    //     } catch (error) {
-    //       console.log(error)
-
-    //       if (error instanceof BaseError) {
-    //         res.status(error.statusCode).send(error.message) 
-    //       } else {
-    //         res.status(500).send("Erro inesperado")
-    //       }
-    //     }
-    //   }
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.status(500).send("Erro inesperado")
+            }
+        }
+    }
 
     //   deletePost = async (req: Request, res: Response) => {
     //     try {

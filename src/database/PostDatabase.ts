@@ -21,14 +21,14 @@ export class PostDatabase extends BaseDatabase {
       )
       .join("users", "posts.creator_id", "=", "users.id")
 
-      return result
+    return result
   }
 
-  // public async insertPost(newPostDB: PostDB) {
-  //   await BaseDatabase
-  //     .connection(PostDatabase.TABLE_POSTS)
-  //     .insert(newPostDB)
-  // }
+  public async insertPost(newPostDB: PostDB): Promise<void> {
+    await BaseDatabase
+      .connection(PostDatabase.TABLE_POSTS)
+      .insert(newPostDB)
+  }
 
   // public async findPosts(q: string | undefined) {
   //   let postsDB
@@ -49,13 +49,18 @@ export class PostDatabase extends BaseDatabase {
   //   return postsDB
   // }
 
-  // public async findPostById(id: string) {
-  //   const [postDB]: PostDB[] | undefined[] = await BaseDatabase
-  //     .connection(PostDatabase.TABLE_POSTS)
-  //     .where({ id })
+  public async findPostById(id: string) {
+    const [postDB]: PostDB[] | undefined[] = await BaseDatabase
+      .connection(PostDatabase.TABLE_POSTS)
+      .where({ id })
 
-  //   return postDB
-  // }
+    return postDB
+  }
 
+  public async updatePost(id: string, postDB: PostDB): Promise<void> {
+     await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+     .update(postDB)
+     .where({ id }) 
 
+  }
 }
