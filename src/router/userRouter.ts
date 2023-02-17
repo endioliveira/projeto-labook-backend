@@ -6,7 +6,7 @@ import { HashManager } from "../services/HashManager";
 import { IdGenerator } from "../services/IdGenerator"
 import { TokenManager } from "../services/TokenManager"
 
-export const userRouter = express.Router() // criação do router de users
+export const userRouter = express.Router() 
 
 const userController = new UserController(
     new UserBusiness(

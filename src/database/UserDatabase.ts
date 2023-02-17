@@ -4,7 +4,7 @@ import { BaseDatabase } from "./BaseDatabase"
 
 export class UserDatabase extends BaseDatabase {
   static TABLE_USERS = "users"
-  
+
   public async insertUser(newUserDB: UserDB) {
     await BaseDatabase
       .connection(UserDatabase.TABLE_USERS)
@@ -43,8 +43,8 @@ export class UserDatabase extends BaseDatabase {
       .connection(UserDatabase.TABLE_USERS)
       .select()
       .where({ email })
-      
-      return result[0]
+
+    return result[0]
   }
 
 }

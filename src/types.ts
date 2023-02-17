@@ -3,12 +3,6 @@ export enum ROLES {
     ADMIN = "ADMIN"
 }
 
-// export interface TokenPayload {
-//     id: string,
-// 	name: string,
-//     role: ROLES
-// }
-
 export interface UserDB {
     id: string,
     name: string,
@@ -24,7 +18,7 @@ export interface UserModel {
     email: string,
     password: string,
     role: ROLES,
-    createdAt: string //trocar pra createdAt
+    createdAt: string
 }
 
 export interface PostDB {
@@ -37,18 +31,17 @@ export interface PostDB {
     updated_at: string 
 }
 
-export interface PostCreatorsDB extends PostDB{
+export interface PostCreatorDB extends PostDB{
     name: string
 }
 
 export interface PostModel {
     id: string,
-    // creator_id: string,
     content: string,
     likes: number,
     dislikes: number,
-    createdAt: string, //trocar pra createdAt
-    updatedAt: string, //trocar pra updatedAt
+    createdAt: string,
+    updatedAt: string,
     creator: {
         id: string
         name: string
@@ -59,6 +52,11 @@ export interface likeDislikeDB {
     user_id: string,
     post_id: string,
     like: boolean
+}
+
+export enum POST_LIKE {
+    ALREADY_LIKED = "ALREADY LIKED",
+    ALREADY_DISLIKED = "ALREADY DISLIKED"
 }
 
 export interface UpdatePostDB {

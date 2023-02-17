@@ -59,14 +59,12 @@ export class UserBusiness {
         const newUserDB = newUser.toDBModel()
         await this.userDBInstance.insertUser(newUserDB)
 
-        // modelagem do payload do token
         const tokenPayload: TokenPayload = {
             id: newUser.getId(),
             name: newUser.getName(),
             role: newUser.getRole()
         }
 
-        // criação do token
         const token = this.tokenManager.createToken(tokenPayload)
 
         const output: SignupOutputDTO = {
@@ -118,14 +116,12 @@ export class UserBusiness {
             throw new BadRequestError("O 'password' está incorreto!")
         }
         
-        // modelagem do payload do token
         const tokenPayload: TokenPayload = {
             id: user.getId(),
             name: user.getName(),
             role: user.getRole()
         }
 
-        // criação do token
         const token = this.tokenManager.createToken(tokenPayload)
 
         const output: LoginOutputDTO = {
