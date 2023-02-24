@@ -209,7 +209,7 @@ Segunda funcionalidade - Dislike
   }
 ```
 
-### :large_blue_circle: devDependecies 
+### :large_blue_circle: devDependencies 
 ```
 "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
